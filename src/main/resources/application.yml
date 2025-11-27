@@ -7,4 +7,6 @@ spring:
     ollama:
       chat:
         options:
-          model: qwen
+          model: qwen2.5-coder:7b
+          temperature: 0.5
+          max-completion-tokens: 128

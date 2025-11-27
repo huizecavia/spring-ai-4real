@@ -21,13 +21,19 @@ public class ChatController {
                 .build();
     }
 
-    @PostMapping("/v1/chats")
-    public Object chat(@RequestBody UserInput userInput ) {
+//    https://docs.spring.io/spring-ai/reference/api/retrieval-augmented-generation.html
+
+//    https://github.com/ollama/ollama/blob/main/docs/api.md#parameters-1
+    @PostMapping("/v2/chats")
+    public Object chatV2(@RequestBody UserInput userInput ) {
 
         log.info("userInput message : {} ", userInput);
 
+        var systemMessage = "You are a helpful assistant. Answer the question in German.";
+
         var requestSpec = chatClient.prompt()
-                .user(userInput.prompt());
+                .user(userInput.prompt())
+                .system(systemMessage);
 
         log.info("requestSpec: {}", requestSpec);
 
