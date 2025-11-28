@@ -1,28 +1,12 @@
-# Read Me First
-The following was discovered as part of building this project:
 
-* The original package name 'org.matthijs.spring-ai-4real' is invalid and this project uses 'org.matthijs.spring_ai_4real' instead.
+podman pull ankane/pgvector
 
-# Getting Started
+podman run -e POSTGRES_USER=4real -e POSTGRES_PASSWORD=4real -e POSTGRES_DB=springai --name my_springai -p 5432:5432 -d ankane/pgvector
 
-### Reference Documentation
-For further reference, please consider the following sections:
+podman exec -it my_springai /bin/bash
 
-* [Official Gradle documentation](https://docs.gradle.org)
-* [Spring Boot Gradle Plugin Reference Guide](https://docs.spring.io/spring-boot/3.5.7/gradle-plugin)
-* [Create an OCI image](https://docs.spring.io/spring-boot/3.5.7/gradle-plugin/packaging-oci-image.html)
-* [Spring Web](https://docs.spring.io/spring-boot/3.5.7/reference/web/servlet.html)
-* [Ollama](https://docs.spring.io/spring-ai/reference/api/chat/ollama-chat.html)
+psql -h localhost -U 4real -d springai -p 5432
 
-### Guides
-The following guides illustrate how to use some features concretely:
+CREATE EXTENSION vector;
 
-* [Building a RESTful Web Service](https://spring.io/guides/gs/rest-service/)
-* [Serving Web Content with Spring MVC](https://spring.io/guides/gs/serving-web-content/)
-* [Building REST services with Spring](https://spring.io/guides/tutorials/rest/)
-
-### Additional Links
-These additional references should also help you:
-
-* [Gradle Build Scans – insights for your project's build](https://scans.gradle.com#gradle)
-
+SELECT * FROM pg_extension;)
