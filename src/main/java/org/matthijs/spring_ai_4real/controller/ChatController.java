@@ -1,10 +1,12 @@
-package org.matthijs.spring_ai_4real.chats;
+package org.matthijs.spring_ai_4real.controller;
 
 //import org.matthijs.spring_ai_4real.dto.UserInput;
 import org.matthijs.spring_ai_4real.dto.UserInput;
+import org.matthijs.spring_ai_4real.service.VectordbService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -16,13 +18,15 @@ public class ChatController {
 
     private final ChatClient chatClient;
 
-    public ChatController(ChatClient.Builder chatClientBuilder) {
+    private final VectordbService vectordbService;
+
+    public ChatController(ChatClient.Builder chatClientBuilder, VectordbService vectordbService) {
         this.chatClient = chatClientBuilder
                 .build();
+        this.vectordbService = vectordbService;
     }
 
 //    https://docs.spring.io/spring-ai/reference/api/retrieval-augmented-generation.html
-
 //    https://github.com/ollama/ollama/blob/main/docs/api.md#parameters-1
     @PostMapping("/v2/chats")
     public Object chatV2(@RequestBody UserInput userInput ) {
@@ -43,5 +47,11 @@ public class ChatController {
         log.info("content: {}", content);
 
         return content;
+    }
+
+    @GetMapping("/vectordb")
+    public String vectordb() {
+
+        return vectordbService.getVectorRespons();
     }
 }

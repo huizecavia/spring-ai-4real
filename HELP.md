@@ -28,3 +28,10 @@ spring.datasource.password=mypassword
 
 ~\dt
 
+
+https://www.linkedin.com/pulse/retrieval-augmented-generation-hands-rahul-mittal-6uzcc
+https://docs.spring.io/spring-ai/reference/api/embeddings.html
+https://docs.spring.io/spring-ai/reference/api/embeddings/ollama-embeddings.html
+
+https://medium.com/@gareth.hallberg_55290/part-7-implementing-rag-part-1-embeddings-and-vector-stores-with-spring-ai-6ae97926d13e
+https://github.com/garethhallberg/kotlin_spring_ai_basics/tree/main/spring-ai-basics_rag_1
