@@ -1,3 +1,5 @@
+https://medium.com/@adarsh.ajay/setting-up-postgresql-with-pgvector-in-docker-a-step-by-step-guide-d4203f6456bd
+
 
 podman pull ankane/pgvector
 
