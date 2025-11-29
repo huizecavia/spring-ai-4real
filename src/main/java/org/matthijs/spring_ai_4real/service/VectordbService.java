@@ -2,6 +2,8 @@ package org.matthijs.spring_ai_4real.service;
 
 import org.springframework.ai.document.Document;
 import org.springframework.ai.embedding.EmbeddingModel;
+import org.springframework.ai.vectorstore.SimpleVectorStore;
+import org.springframework.ai.vectorstore.VectorStore;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -9,10 +11,10 @@ import java.util.List;
 @Service
 public class VectordbService {
 
-    private final EmbeddingModel embeddingModel;
+    private final EmbeddingModel embedding;
 
-    public VectordbService(EmbeddingModel embeddingModel) {
-        this.embeddingModel = embeddingModel;
+    public VectordbService(EmbeddingModel embedding) {
+        this.embedding = embedding;
     }
 
 
@@ -31,19 +33,14 @@ public class VectordbService {
     public String getVectorRespons() {
 
 
-//        String root = System.getProperty("user.dir");
-//        String filepath = "/src/main/resources/365/";
-//        String abspath = root + filepath;
-//        Document document = new Document("Hello World!");
-//
-        embeddingModel.embed("Tekst kan ook");
+        String root = System.getProperty("user.dir");
+        String filepath = "/src/main/resources/365/";
+        String filename = "1-71.txt";
+        String abspath = root + filepath + filename;
+        Document d = new Document(abspath);
+        embedding.embed(d);
 
-//        List<Document> documents = FileSystemDocumentLoader.loadDocuments(abspath);
-//        InMemoryEmbeddingStore<TextSegment> embeddingStore = new InMemoryEmbeddingStore<>();
-//        EmbeddingStoreIngestor.ingest(documents, embeddingStore);
-//        return embeddingStore.serializeToJson();
-
-
+//        SimpleVectorStore vs = new SimpleVectorStore();
         return "vectordb";
     }
 }
