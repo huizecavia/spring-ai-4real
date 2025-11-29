@@ -40,7 +40,8 @@ public class VectordbService {
         Document d = new Document(abspath);
         embedding.embed(d);
 
-//        SimpleVectorStore vs = new SimpleVectorStore();
+
+        SimpleVectorStore vs = SimpleVectorStore.builder(embedding).build();
         return "vectordb";
     }
 }
