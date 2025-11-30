@@ -20,12 +20,10 @@ public class VectordbService {
 
 
 
-    public String getVectorRespons() {
-
-
+    public SimpleVectorStore getVectorRespons() {
         String root = System.getProperty("user.dir");
-        String filepath = "/src/main/resources/365/";
-        String filename = "1-71.txt";
+        String filepath = "/src/main/resources/rag-it/";
+        String filename = "pan.txt";
         String abspath = root + filepath + filename;
         Document d = new Document(abspath);
         List<Document> dlist = List.of(d);
@@ -35,6 +33,6 @@ public class VectordbService {
         vs.add(dlist);
         vs.save(new File("vectordb.db"));
 
-        return "vectordb";
+        return vs;
     }
 }

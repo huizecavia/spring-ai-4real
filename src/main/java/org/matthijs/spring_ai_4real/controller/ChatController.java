@@ -6,6 +6,11 @@ import org.matthijs.spring_ai_4real.service.VectordbService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
+import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvisor;
+import org.springframework.ai.chat.model.ChatModel;
+import org.springframework.ai.chat.model.ChatResponse;
+import org.springframework.ai.vectorstore.SearchRequest;
+import org.springframework.ai.vectorstore.SimpleVectorStore;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,11 +23,14 @@ public class ChatController {
 
     private final ChatClient chatClient;
 
+    private final ChatModel chatModel;
+
     private final VectordbService vectordbService;
 
-    public ChatController(ChatClient.Builder chatClientBuilder, VectordbService vectordbService) {
+    public ChatController(ChatClient.Builder chatClientBuilder, ChatModel chatModel, VectordbService vectordbService) {
         this.chatClient = chatClientBuilder
                 .build();
+        this.chatModel = chatModel;
         this.vectordbService = vectordbService;
     }
 
@@ -32,26 +40,23 @@ public class ChatController {
     public Object chatV2(@RequestBody UserInput userInput ) {
 
         log.info("userInput message : {} ", userInput);
+        var systemMessage = "You are a helpful assistant. Answer the question in English.";
 
-        var systemMessage = "You are a helpful assistant. Answer the question in German.";
+        SimpleVectorStore vs = vectordbService.getVectorRespons();
 
-        var requestSpec = chatClient.prompt()
+        ChatResponse response = ChatClient.builder(chatModel)
+                .build().prompt()
+                .advisors(QuestionAnswerAdvisor.builder(vs).build())
                 .user(userInput.prompt())
-                .system(systemMessage);
+                .call()
+                .chatResponse();
 
-        log.info("requestSpec: {}", requestSpec);
-
-        var responseSpec = requestSpec.call();
-        log.info("responseSpec: {}", responseSpec);
-        var content = responseSpec.content();
-        log.info("content: {}", content);
-
-        return content;
+        return response;
     }
 
     @GetMapping("/vectordb")
     public String vectordb() {
 
-        return vectordbService.getVectorRespons();
+        return "hoi";
     }
 }
