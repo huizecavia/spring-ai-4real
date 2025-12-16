@@ -23,7 +23,7 @@ public class VectordbService {
     public SimpleVectorStore getVectorRespons() {
         String root = System.getProperty("user.dir");
         String filepath = "/src/main/resources/rag-it/";
-        String filename = "pan.txt";
+        String filename = "Kudelstaart.txt";
         String abspath = root + filepath + filename;
         Document d = new Document(abspath);
         List<Document> dlist = List.of(d);
@@ -32,7 +32,7 @@ public class VectordbService {
         SimpleVectorStore vs = SimpleVectorStore.builder(embedding).build();
         vs.add(dlist);
         vs.save(new File("vectordb.db"));
-        vs.similaritySearch("vraag maar wat");
+        var a = vs.similaritySearch("famous poet");
         return vs;
     }
 }
