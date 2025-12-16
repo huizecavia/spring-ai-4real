@@ -7,8 +7,8 @@ spring:
     ollama:
       embedding:
         options:
-          model: llama3
+          model: qwen
       chat:
         options:
-          model: llama3
+          model: qwen
           temperature: 0.8

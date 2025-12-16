@@ -32,7 +32,7 @@ public class VectordbService {
         SimpleVectorStore vs = SimpleVectorStore.builder(embedding).build();
         vs.add(dlist);
         vs.save(new File("vectordb.db"));
-
+        vs.similaritySearch("vraag maar wat");
         return vs;
     }
 }

@@ -56,7 +56,7 @@ public class ChatController {
 
     @GetMapping("/vectordb")
     public String vectordb() {
-
+        SimpleVectorStore vs = vectordbService.getVectorRespons();
         return "hoi";
     }
 }
