@@ -6,6 +6,7 @@ import org.springframework.ai.vectorstore.SimpleVectorStore;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -22,17 +23,34 @@ public class VectordbService {
 
     public SimpleVectorStore getVectorRespons() {
         String root = System.getProperty("user.dir");
-        String filepath = "/src/main/resources/rag-it/";
-        String filename = "Kudelstaart.txt";
-        String abspath = root + filepath + filename;
-        Document d = new Document(abspath);
-        List<Document> dlist = List.of(d);
+        String filepath = "/src/main/resources/articles/"; // directory containing files
+        File dir = new File(root + filepath);
 
-        var b = embedding.embed(d);
+        if (!dir.exists() || !dir.isDirectory()) {
+            throw new IllegalStateException("Directory not found: " + dir.getAbsolutePath());
+        }
+
+        File[] files = dir.listFiles();
+        List<Document> dlist = new ArrayList<>();
+        if (files != null) {
+            for (File f : files) {
+                if (f.isFile()) {
+                    dlist.add(new Document(f.getAbsolutePath()));
+                }
+            }
+        }
+
+        // optionally embed documents (embedding usage depends on model API)
+        for (Document doc : dlist) {
+            embedding.embed(doc);
+        }
+
+
+
         SimpleVectorStore vs = SimpleVectorStore.builder(embedding).build();
         vs.add(dlist);
         vs.save(new File("vectordb.db"));
-        var a = vs.similaritySearch("famous poet");
+        var a = vs.similaritySearch("identiteitsbewijs");
         return vs;
     }
 }
