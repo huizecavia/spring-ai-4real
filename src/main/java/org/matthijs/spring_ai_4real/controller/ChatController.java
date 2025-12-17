@@ -41,12 +41,11 @@ public class ChatController {
         log.info("userInput message : {} ", userInput);
         var systemMessage = "You are a helpful assistant. Answer the question in English.";
 
-        SimpleVectorStore vs = vectordbService.getVectorRespons();
-
         ChatResponse response = ChatClient.builder(chatModel)
                 .build().prompt()
-                .advisors(QuestionAnswerAdvisor.builder(vs).build())
                 .user(userInput.prompt())
+                .advisors(
+                        QuestionAnswerAdvisor.builder(vectordbService.getVectorStore()).build())
                 .call()
                 .chatResponse();
 
@@ -55,7 +54,7 @@ public class ChatController {
 
     @GetMapping("/vectordb")
     public String vectordb() {
-        SimpleVectorStore vs = vectordbService.getVectorRespons();
+        SimpleVectorStore vs = vectordbService.getVectorStore();
         return "hoi";
     }
 }

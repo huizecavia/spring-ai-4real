@@ -18,10 +18,7 @@ public class VectordbService {
         this.embedding = embedding;
     }
 
-
-
-
-    public SimpleVectorStore getVectorRespons() {
+    public SimpleVectorStore getVectorStore() {
         String root = System.getProperty("user.dir");
         String filepath = "/src/main/resources/articles/"; // directory containing files
         File dir = new File(root + filepath);
@@ -50,7 +47,7 @@ public class VectordbService {
         SimpleVectorStore vs = SimpleVectorStore.builder(embedding).build();
         vs.add(dlist);
         vs.save(new File("vectordb.db"));
-        var a = vs.similaritySearch("identiteitsbewijs");
+        var similarDocs = vs.similaritySearch("identiteitsbewijs");
         return vs;
     }
 }
