@@ -14,13 +14,16 @@ public class VectordbService {
 
     private final EmbeddingModel embedding;
 
-    public VectordbService(EmbeddingModel embedding) {
+    private final OllamaService os;
+
+    public VectordbService(EmbeddingModel embedding, OllamaService os) {
         this.embedding = embedding;
+        this.os = os;
     }
 
     public SimpleVectorStore getVectorStore() {
         String root = System.getProperty("user.dir");
-        String filepath = "/src/main/resources/articles/"; // directory containing files
+        String filepath = "/src/main/resources/gameRules/"; // directory containing files
         File dir = new File(root + filepath);
 
         if (!dir.exists() || !dir.isDirectory()) {
@@ -37,17 +40,19 @@ public class VectordbService {
             }
         }
 
-        // optionally embed documents (embedding usage depends on model API)
         for (Document doc : dlist) {
+
+            String title = os.getTitle(doc);
+            doc.getMetadata().put("title", title);
             embedding.embed(doc);
         }
-
-
 
         SimpleVectorStore vs = SimpleVectorStore.builder(embedding).build();
         vs.add(dlist);
         vs.save(new File("vectordb.db"));
-        var similarDocs = vs.similaritySearch("identiteitsbewijs");
+
+//        var similarDocs = vs.similaritySearch("identiteitsbewijs");
         return vs;
     }
+
 }

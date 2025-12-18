@@ -1,0 +1,4 @@
+The title of this game is LinuxChess.
+
+It is like normal chess, only the pieces are penguins.
+
