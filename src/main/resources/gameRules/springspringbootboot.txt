@@ -1,0 +1,3 @@
+The title of this game is SpringSpringBootBoot
+
+The rules of this game are: step on 1 - 23 - 4 - 56 - 7 - 89 - 10.

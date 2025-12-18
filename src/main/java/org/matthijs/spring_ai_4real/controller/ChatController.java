@@ -2,6 +2,7 @@ package org.matthijs.spring_ai_4real.controller;
 
 //import org.matthijs.spring_ai_4real.dto.UserInput;
 import org.matthijs.spring_ai_4real.dto.UserInput;
+import org.matthijs.spring_ai_4real.service.GameRulesService;
 import org.matthijs.spring_ai_4real.service.VectordbService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,10 +11,7 @@ import org.springframework.ai.chat.client.advisor.vectorstore.QuestionAnswerAdvi
 import org.springframework.ai.chat.model.ChatModel;
 import org.springframework.ai.chat.model.ChatResponse;
 import org.springframework.ai.vectorstore.SimpleVectorStore;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 public class ChatController {
@@ -21,40 +19,33 @@ public class ChatController {
     private static final Logger log = LoggerFactory.getLogger(ChatController.class);
 
     private final ChatClient chatClient;
-
     private final ChatModel chatModel;
-
     private final VectordbService vectordbService;
+    private final GameRulesService gs;
 
-    public ChatController(ChatClient.Builder chatClientBuilder, ChatModel chatModel, VectordbService vectordbService) {
+    public ChatController(ChatClient.Builder chatClientBuilder, ChatModel chatModel, VectordbService vectordbService, GameRulesService gs) {
+        this.gs = gs;
         this.chatClient = chatClientBuilder
                 .build();
         this.chatModel = chatModel;
         this.vectordbService = vectordbService;
     }
 
-//    https://docs.spring.io/spring-ai/reference/api/retrieval-augmented-generation.html
-//    https://github.com/ollama/ollama/blob/main/docs/api.md#parameters-1
     @PostMapping("/v2/chats")
     public Object chatV2(@RequestBody UserInput userInput ) {
 
         log.info("userInput message : {} ", userInput);
-        var systemMessage = "You are a helpful assistant. Answer the question in English.";
-
-        ChatResponse response = ChatClient.builder(chatModel)
+        return ChatClient.builder(chatModel)
                 .build().prompt()
                 .user(userInput.prompt())
                 .advisors(
                         QuestionAnswerAdvisor.builder(vectordbService.getVectorStore()).build())
                 .call()
                 .chatResponse();
-
-        return response;
     }
 
-    @GetMapping("/vectordb")
-    public String vectordb() {
-        SimpleVectorStore vs = vectordbService.getVectorStore();
-        return "hoi";
+    @GetMapping("/gamerules")
+    public String getGameRules(@RequestParam String gameName) {
+        return gs.getRulesFor(gameName, vectordbService.getVectorStore());
     }
 }
