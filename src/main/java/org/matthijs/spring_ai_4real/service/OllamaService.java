@@ -1,6 +1,5 @@
 package org.matthijs.spring_ai_4real.service;
 
-import org.matthijs.spring_ai_4real.model.GameTitle;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ai.chat.client.ChatClient;
@@ -35,8 +34,8 @@ public class OllamaService {
                         .text(nameOfTheGameTemplateResource)
                         .param("document", doc.getText()))
                 .call()
-                .entity(GameTitle.class);
+                .content();
 
-        LOGGER.info("We hebben een titel gevonden: {}", gameTitle.title());
-        return gameTitle.title(); }
+        LOGGER.info("We hebben een titel gevonden: {}", gameTitle);
+        return gameTitle; }
 }
