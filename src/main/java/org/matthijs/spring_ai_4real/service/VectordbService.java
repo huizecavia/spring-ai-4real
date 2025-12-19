@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -19,17 +18,14 @@ public class VectordbService {
 
     private final EmbeddingModel embeddingModel;
 
-    private final OllamaService os;
+    private final GameRulesService os;
 
-    public VectordbService(EmbeddingModel embeddingModel, OllamaService os) {
+    public VectordbService(EmbeddingModel embeddingModel, GameRulesService os) {
         this.embeddingModel = embeddingModel;
         this.os = os;
     }
 
     public SimpleVectorStore getVectorStore() {
-        String root = System.getProperty("user.dir");
-        String filepath = "/src/main/resources/gameRules/"; // directory containing files
-        File abspath = new File(root + filepath);
 
         SimpleVectorStore simpleVectorStore = SimpleVectorStore.builder(embeddingModel)
                 .build();
