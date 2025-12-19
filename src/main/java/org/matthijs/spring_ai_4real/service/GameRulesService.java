@@ -1,6 +1,5 @@
 package org.matthijs.spring_ai_4real.service;
 
-import org.springframework.ai.content.Media;
 import org.springframework.ai.document.Document;
 import org.springframework.ai.vectorstore.SearchRequest;
 import org.springframework.ai.vectorstore.SimpleVectorStore;
@@ -19,15 +18,7 @@ public class GameRulesService {
 
         Document doc = vectorStore.similaritySearch(searchRequest).getFirst();
 
-        if (doc.isText()) {
-            String textContent = doc.getText();
-            // Process text content
-        } else {
-            Media mediaContent = doc.getMedia();
-            // Process media content
-        }
-
-        return ".....";
+        return doc.getText();
 
     }
 }
