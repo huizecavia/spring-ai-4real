@@ -1,8 +1,12 @@
 package org.matthijs.spring_ai_4real.controller;
 
 //import org.matthijs.spring_ai_4real.dto.UserInput;
+import jakarta.validation.Valid;
 import org.matthijs.spring_ai_4real.dto.UserInput;
+import org.matthijs.spring_ai_4real.model.Answer;
+import org.matthijs.spring_ai_4real.model.Question;
 import org.matthijs.spring_ai_4real.service.GameRulesService;
+import org.matthijs.spring_ai_4real.service.OllamaService;
 import org.matthijs.spring_ai_4real.service.VectordbService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,13 +26,15 @@ public class ChatController {
     private final ChatModel chatModel;
     private final VectordbService vectordbService;
     private final GameRulesService gs;
+    private final OllamaService os;
 
-    public ChatController(ChatClient.Builder chatClientBuilder, ChatModel chatModel, VectordbService vectordbService, GameRulesService gs) {
+    public ChatController(ChatClient.Builder chatClientBuilder, ChatModel chatModel, VectordbService vectordbService, GameRulesService gs, OllamaService os) {
         this.gs = gs;
         this.chatClient = chatClientBuilder
                 .build();
         this.chatModel = chatModel;
         this.vectordbService = vectordbService;
+        this.os = os;
     }
 
     @PostMapping("/v2/chats")
@@ -47,5 +53,10 @@ public class ChatController {
     @GetMapping("/gamerules")
     public String getGameRules(@RequestParam String gameName) {
         return gs.getRulesFor(gameName, vectordbService.getVectorStore());
+    }
+
+    @PostMapping(path="/ask", produces="application/json")
+    public Answer ask(@RequestBody @Valid Question question) {
+        return os.askQuestion(question, vectordbService.getVectorStore());
     }
 }

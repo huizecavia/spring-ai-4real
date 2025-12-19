@@ -11,4 +11,5 @@ spring:
       chat:
         options:
           model: qwen
-          temperature: 0.8
+          temperature: 0.3
+logging.level.org.zalando.logbook: TRACE

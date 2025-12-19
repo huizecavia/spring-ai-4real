@@ -2,57 +2,52 @@ package org.matthijs.spring_ai_4real.service;
 
 import org.springframework.ai.document.Document;
 import org.springframework.ai.embedding.EmbeddingModel;
+import org.springframework.ai.reader.TextReader;
 import org.springframework.ai.vectorstore.SimpleVectorStore;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.core.io.support.ResourcePatternResolver;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class VectordbService {
 
-    private final EmbeddingModel embedding;
+    private final EmbeddingModel embeddingModel;
 
     private final OllamaService os;
 
-    public VectordbService(EmbeddingModel embedding, OllamaService os) {
-        this.embedding = embedding;
+    public VectordbService(EmbeddingModel embeddingModel, OllamaService os) {
+        this.embeddingModel = embeddingModel;
         this.os = os;
     }
 
     public SimpleVectorStore getVectorStore() {
         String root = System.getProperty("user.dir");
         String filepath = "/src/main/resources/gameRules/"; // directory containing files
-        File dir = new File(root + filepath);
+        File abspath = new File(root + filepath);
 
-        if (!dir.exists() || !dir.isDirectory()) {
-            throw new IllegalStateException("Directory not found: " + dir.getAbsolutePath());
-        }
+        SimpleVectorStore simpleVectorStore = SimpleVectorStore.builder(embeddingModel)
+                .build();
 
-        File[] files = dir.listFiles();
-        List<Document> dlist = new ArrayList<>();
-        if (files != null) {
-            for (File f : files) {
-                if (f.isFile()) {
-                    dlist.add(new Document(f.getAbsolutePath()));
-                }
+        try {
+            ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
+            Resource[] resources = resolver.getResources("classpath*:/gameRules/*.txt");
+            for(Resource resource : resources) {
+                TextReader textReader = new TextReader(resource);
+                List<Document> documents = textReader.get();
+                simpleVectorStore.add(documents);
             }
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
-        for (Document doc : dlist) {
-
-            String title = os.getTitle(doc);
-            doc.getMetadata().put("title", title);
-            embedding.embed(doc);
-        }
-
-        SimpleVectorStore vs = SimpleVectorStore.builder(embedding).build();
-        vs.add(dlist);
-        vs.save(new File("vectordb.db"));
-
-//        var similarDocs = vs.similaritySearch("identiteitsbewijs");
-        return vs;
+        simpleVectorStore.save(new File("vectordb.db"));
+        return simpleVectorStore;
     }
 
 }
