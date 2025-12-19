@@ -18,21 +18,18 @@ public class VectordbService {
 
     private final EmbeddingModel embeddingModel;
 
-    private final GameRulesService os;
-
-    public VectordbService(EmbeddingModel embeddingModel, GameRulesService os) {
+    public VectordbService(EmbeddingModel embeddingModel) {
         this.embeddingModel = embeddingModel;
-        this.os = os;
     }
 
-    public SimpleVectorStore getVectorStore() {
+    public SimpleVectorStore getVectorStore(String path) {
 
         SimpleVectorStore simpleVectorStore = SimpleVectorStore.builder(embeddingModel)
                 .build();
 
         try {
             ResourcePatternResolver resolver = new PathMatchingResourcePatternResolver();
-            Resource[] resources = resolver.getResources("classpath*:/gameRules/*.txt");
+            Resource[] resources = resolver.getResources(path);
             for(Resource resource : resources) {
                 TextReader textReader = new TextReader(resource);
                 List<Document> documents = textReader.get();
