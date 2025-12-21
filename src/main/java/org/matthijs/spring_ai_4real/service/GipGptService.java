@@ -28,13 +28,14 @@ public class GipGptService {
     Resource gipGptTemplate;
 
     public Answer askGipGpt(GipGptQuestion question, SimpleVectorStore vectorStore) {
-        var articles = getArticles(
-                question.question(), vectorStore);
+        var artikelen = getArtikelen(
+                question.onderwerp(), vectorStore);
 
         var answer = chatClient.prompt()
                 .system(systemSpec -> systemSpec
                         .text(gipGptTemplate)
-                        .param("articles", articles))
+                        .param("onderwerp", question.onderwerp())
+                        .param("artikelen", artikelen))
                 .user(question.question())
                 .call()
                 .content();
@@ -42,12 +43,12 @@ public class GipGptService {
         return new Answer(question.question(), answer);
     }
 
-    public String getArticles(String question, SimpleVectorStore vectorStore) {
+    public String getArtikelen(String onderwerp, SimpleVectorStore vectorStore) {
 
         var searchRequest = SearchRequest
                 .builder()
-                .query(question)
-                .topK(1)
+                .query(onderwerp)
+                .topK(3)
                 .build();
 
         Document doc = vectorStore.similaritySearch(searchRequest).getFirst();

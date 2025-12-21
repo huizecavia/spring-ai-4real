@@ -46,7 +46,7 @@ public class GameRulesService {
         var searchRequest = SearchRequest
                 .builder()
                 .query(gameName)
-                .topK(1)
+                .topK(3)
                 .build();
 
         Document doc = vectorStore.similaritySearch(searchRequest).getFirst();
